@@ -1,0 +1,78 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
+<link rel="import" href="../bower_components/core-input/core-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-input-decorator.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+
+<polymer-element name="my-login" attributes="message">
+	<template>
+		<style>
+			:host {
+				display: inline-block;
+			}
+			paper-shadow{
+				padding: 15px;
+				background-color: #fff;
+			}
+			h3{
+				margin: 0;
+			}
+			paper-progress{
+				width: 100%;
+			}
+			paper-spinner{
+				margin: 5px;
+			}
+
+			.response{
+				font-family: monospace;
+			}
+		</style>
+
+		<core-ajax id="ajax" handleAs="text" on-core-response="{{handleResponse}}" auto method="POST" url="http://127.0.0.1/polymer_php/server.php" params="{{ {username: username, password: password} }}" progress="{{progress}}" loading="{{loading}}"></core-ajax>
+
+		<paper-shadow z="5" animated>
+			<div vertical layout>
+
+				<h3 id="message">{{message}}</h3>
+
+			 	<paper-input-decorator label="name" floatinglabel>
+			      <input is="core-input" value="{{username}}">
+			    </paper-input-decorator>
+
+			    <paper-input-decorator label="password" floatinglabel>
+			      <input is="core-input" type="password" value="{{password}}">
+			    </paper-input-decorator>
+				
+				<div horizontal layout end>
+					<div>loaded: {{progress.loaded}} <br> total: {{progress.total}}</div>
+					<span flex></span>
+					<div vertical layout>
+						<paper-spinner active="{{loading}}"></paper-spinner>
+						<template if="{{loading}}">Loading...</template>
+		       			<template if="{{!loading}}">Loaded!</template>
+					</div>
+				</div>
+
+				<br>
+				<div class="response">Response:</div>
+				<div id="response" class="response"></div>
+			</div>
+		</paper-shadow>
+
+	</template>
+	<script>
+		Polymer({
+			message: "Hallo World",
+			loading: true,
+			ready: function(){},
+			handleResponse: function(e){
+				this.$.response.innerHTML=e.detail.response;
+			}
+		});
+	</script>
+</polymer-element>
